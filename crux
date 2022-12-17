@@ -19,20 +19,25 @@ def main()
   exts = [".js", ".css", ".html"]
 
   # Path argument with some cleanup
+  if not ARGV[0]
+    puts "A path argument is required."
+    return
+  end
+
   path_arg = ARGV[0].gsub(/\/+$/, "")
 
   # Get all paths starting from path_arg
-  paths = Dir.glob(path_arg + "/**/*").select { |e| File.file? e }
+  paths = Dir.glob(File.join(path_arg, "**", "*")).select { |e| File.file? e }
 
   # Hold valid paths here
   valid_paths = []
 
-  for path in paths do 
+  paths.each do |path|
     if filters.any? { |x| path.include? x }
       next
     end
 
-    if not exts.include?(File.extname(path)) then
+    if not exts.include?(File.extname(path))
       next
     end
 
@@ -44,18 +49,23 @@ def main()
   puts "Number of files to be processed is " + valid_paths.length.to_s
   ans = $stdin.gets.strip
 
-  if ans != "y" and ans != "Y" then
+  if ans != "y" and ans != "Y"
     puts "Doing nothing. Exiting."
     return
   end
 
   # Do the actual operations
-  for path in valid_paths do
+  valid_paths.each do |path|
     clean_file(path)
   end
 
   puts "Done."
 end
+
+# Trap ^C 
+Signal.trap("INT") { 
+  exit
+}
 
 # Start here
 if __FILE__ == $0
