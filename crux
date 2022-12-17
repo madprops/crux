@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+
+# This trims all unecessary trailing white space of all files in a directory
+# It works recursively starting from the directory sent as the argument
+# It will only work on common text files like js so these will be hardcoded
+
+# Do the trim operation and save the file
+def clean_file(path)
+  s = File.read(path)
+  cleaned = s.gsub(/ +$/, "")
+  File.write(path, cleaned)
+end
+
+def main()
+  # Ignore files form these places
+  filters = ["/node_modules/"]
+
+  # Only work on these extensions
+  exts = [".js", ".css", ".html"]
+
+  # Path argument with some cleanup
+  root = ARGV[0].gsub(/\/+$/, "")
+
+  # Get all paths starting from root
+  paths = Dir.glob(root + "/**/*").select { |e| File.file? e }
+
+  # Hold valid paths here
+  valid_paths = []
+
+  for path in paths do 
+    if filters.any? { |x| path.include? x }
+      next
+    end
+
+    if not exts.include?(File.extname(path)) then
+      next
+    end
+
+    valid_paths.push(path)
+  end
+
+  # Ask for confirmation
+  puts "Trim files inside " + root + " (y/n)"
+  puts "Number of files to be processed is " + valid_paths.length.to_s
+  ans = $stdin.gets.strip
+
+  if ans != "y" and ans != "Y" then
+    puts "Doing nothing. Exiting."
+    return
+  end
+
+  # Do the actual operations
+  for path in valid_paths do
+    clean_file(path)
+  end
+
+  puts "Done."
+end
+
+# Start here
+if __FILE__ == $0
+  main()
+end
