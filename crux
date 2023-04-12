@@ -16,7 +16,7 @@ def main()
   filters = ["/node_modules/"]
 
   # Only work on these extensions
-  exts = [".js", ".css", ".html"]
+  exts = [".js", ".css", ".html", ".nim", ".rb", ".py", ".rs"]
 
   # Path argument with some cleanup
   if not ARGV[0]
