@@ -24,6 +24,12 @@ def main()
     return
   end
 
+  force = false
+
+  if ARGV[1] == "-y"
+    force = true
+  end
+
   path_arg = ARGV[0].gsub(/\/+$/, "")
 
   # Get all paths starting from path_arg
@@ -47,11 +53,14 @@ def main()
   # Ask for confirmation
   puts "Trim files inside " + path_arg + " (y/n)"
   puts "Number of files to be processed is " + valid_paths.length.to_s
-  ans = $stdin.gets.strip
 
-  if ans != "y" and ans != "Y"
-    puts "Doing nothing. Exiting."
-    return
+  if not force
+    ans = $stdin.gets.strip
+  
+    if ans != "y" and ans != "Y"
+      puts "Doing nothing. Exiting."
+      return
+    end
   end
 
   # Do the actual operations
