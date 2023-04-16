@@ -6,8 +6,13 @@
 
 # Do the trim operation and save the file
 def clean_file(path)
-  s = File.read(path)
-  cleaned = s.gsub(/ +$/, "")
+  unclean = File.read(path)
+  cleaned = unclean.gsub(/ +$/, "")
+  
+  if unclean != cleaned
+    puts "Cleaned #{path}"
+  end
+
   File.write(path, cleaned)
 end
 
